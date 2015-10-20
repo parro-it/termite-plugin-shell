@@ -131,7 +131,7 @@ class ShellComponent {
 
   deactivate() {
     this.element.style.display = 'none';
-    this.children.stdin.removeEventListener('blur', this.resetFocus);
+    this.children.stdin.removeEventListener('blur', this._resetFocus);
   }
 }
 
