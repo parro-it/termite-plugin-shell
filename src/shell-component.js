@@ -103,8 +103,9 @@ function setupEvents(process, terminal) {
 }
 
 
-class ShellComponent {
+class ShellComponent extends EventEmitter {
   constructor(app, pkg) {
+    super();
     this.element = document.createElement('main');
     this.process = createShellProcess();
     this.children = createDomElements(this.element);
@@ -112,6 +113,9 @@ class ShellComponent {
     setImmediate(() => {
       this.terminal = createTerminal(this.children, pkg, app);
       setupEvents(this.process, this.terminal);
+      this.process.on('exit', () => {
+        this.emit('process-closed');
+      });
     });
   }
 

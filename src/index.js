@@ -22,9 +22,14 @@ module.exports = function init(app) {
     path: __dirname
   };
 
-  app.commands.register('new-tab', () =>
-    app.tabs.add(new ShellComponent(app, pkg))
-  );
+  app.commands.register('new-tab', () => {
+    const component = new ShellComponent(app, pkg);
+    const tab = app.tabs.add(component);
+    component.on('process-closed', () => {
+      app.tabs.activateFirstTab();
+      tab.close();
+    });
+  });
 
 
   return pkg;
