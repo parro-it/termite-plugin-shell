@@ -8527,8 +8527,9 @@ hterm.Screen.prototype.insertString = function(str) {
     // We now know for sure that we're at the last character of the cursor node.
     reverseOffset = 0;
   }
+  var isEmoji = twemoji.parse(str).indexOf('<img') !== -1;
 
-  if (this.textAttributes.matchesContainer(cursorNode)) {
+  if (!isEmoji && this.textAttributes.matchesContainer(cursorNode)) {
     // The new text can be placed directly in the cursor node.
     if (reverseOffset == 0) {
       cursorNode.textContent = cursorNodeText + str;
@@ -13697,11 +13698,13 @@ hterm.TextAttributes.prototype.isDefault = function() {
  *     attributes.
  */
 hterm.TextAttributes.prototype.createContainer = function(opt_textContent) {
-  if (this.isDefault())
+  var isEmoji = twemoji.parse(opt_textContent).indexOf('<img') !== -1;
+  if (!isEmoji && this.isDefault())
     return this.document_.createTextNode(opt_textContent);
 
   var span = this.document_.createElement('span');
   var style = span.style;
+
 
   if (this.foreground != this.DEFAULT_COLOR)
     style.color = this.foreground;
@@ -13745,8 +13748,24 @@ hterm.TextAttributes.prototype.createContainer = function(opt_textContent) {
     span.tileNode = true;
   }
 
-  if (opt_textContent)
-    span.textContent = opt_textContent;
+
+  if (opt_textContent) {
+    if (isEmoji) {
+      span.innerHTML = twemoji.parse(opt_textContent, {
+        ext: '.svg',
+        size: 'svg',
+        attributes: function attributesCallback(icon, variant) {
+          return {
+            style: 'width: 100%;height: 100%;vertical-align:top;'
+          };
+        }
+      });
+      span.tileNode = true;
+    } else {
+      span.textContent = opt_textContent;
+    }
+
+  }
 
   return span;
 };
