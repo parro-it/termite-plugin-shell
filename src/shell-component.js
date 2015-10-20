@@ -76,7 +76,7 @@ function createTerminal(elms, pkg, app) {
 }
 
 function createShellProcess() {
-  const proc = pty.spawn('zsh', [], {
+  const proc = pty.spawn(process.env.SHELL, [], {
     name: 'xterm-color',
     cwd: process.env.HOME,
     env: process.env
