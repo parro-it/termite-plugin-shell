@@ -3,5 +3,22 @@
     label: 'New shell tab',
     accelerator: 'CmdOrCtrl+T',
     command: 'new-tab'
+  }],
+  Edit: [{
+    label: 'Previous word',
+    accelerator: 'CmdOrCtrl+Left',
+    command: 'prev-word'
+  },{
+    label: 'Next word',
+    accelerator: 'CmdOrCtrl+Right',
+    command: 'next-word'
+  },{
+    label: 'Start of line',
+    accelerator: 'CmdOrCtrl+Home',
+    command: 'start-line'
+  },{
+    label: 'End of line',
+    accelerator: 'CmdOrCtrl+End',
+    command: 'end-line'
   }]
 }

@@ -71,7 +71,7 @@ function createTerminal(elms, pkg, app) {
 
     elms.stdout.querySelector('iframe').contentDocument.body.appendChild(cssLink);
   });
-
+  termGui.t = t;
   return termGui;
 }
 
@@ -112,11 +112,28 @@ class ShellComponent extends EventEmitter {
 
     setImmediate(() => {
       this.terminal = createTerminal(this.children, pkg, app);
+      this.hterm = this.terminal.t;
       setupEvents(this.process, this.terminal);
       this.process.on('exit', () => {
         this.emit('process-closed');
       });
     });
+  }
+
+  sendKey(k, type) {
+    const evt = new KeyboardEvent(type);
+    Object.defineProperty(evt, 'keyCode', {
+      get() {
+        return k;
+      }
+    });
+    Object.defineProperty(evt, 'which', {
+      get() {
+        return k;
+      }
+    });
+
+    this.children.stdin.dispatchEvent(evt);
   }
 
   close() {
