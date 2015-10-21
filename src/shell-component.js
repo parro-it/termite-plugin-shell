@@ -5,19 +5,12 @@ const EventEmitter = require('events').EventEmitter;
 
 
 function createDomElements(elm) {
-  const stdin = document.createElement('input');
-
-  stdin.classList.add('stdin');
-  stdin.type = 'text';
-
   const stdout = document.createElement('div');
   stdout.classList.add('terminal');
 
-  elm.appendChild(stdin);
   elm.appendChild(stdout);
 
   return {
-    stdin: stdin,
     stdout: stdout
   };
 }
@@ -57,8 +50,6 @@ function createTerminal(elms, pkg, app) {
     };
   };
 
-
-  t.keyboard.installKeyboard(elms.stdin);
   t.decorate(elms.stdout);
 
   setTimeout(() => {
@@ -113,6 +104,7 @@ class ShellComponent extends EventEmitter {
     setImmediate(() => {
       this.terminal = createTerminal(this.children, pkg, app);
       this.hterm = this.terminal.t;
+      this.hterm.installKeyboard();
       setupEvents(this.process, this.terminal);
       this.process.on('exit', () => {
         this.emit('process-closed');
@@ -133,26 +125,29 @@ class ShellComponent extends EventEmitter {
       }
     });
 
-    this.children.stdin.dispatchEvent(evt);
+    this.hterm.keyboard.onKeyDown_(evt);
   }
 
   close() {
     this.element.remove();
   }
 
-  _resetFocus(e) {
-    setTimeout(() => e.target.focus());
-  }
-
   activate() {
+    if (this.hterm) {
+      this.hterm.installKeyboard();
+    }
+
     this.element.style.display = '';
-    this.children.stdin.addEventListener('blur', this._resetFocus);
-    this.children.stdin.focus();
+
+
+    this.children.stdout.focus();
   }
 
   deactivate() {
+    if (this.hterm) {
+      this.hterm.uninstallKeyboard();
+    }
     this.element.style.display = 'none';
-    this.children.stdin.removeEventListener('blur', this._resetFocus);
   }
 }
 
