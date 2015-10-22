@@ -35,6 +35,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "twemoji": "^1.4.1"
+    "twemoji": "^1.4.1",
+    "pty.js": "^0.3.0"
   }
 }
