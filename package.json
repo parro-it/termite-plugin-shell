@@ -33,5 +33,8 @@
   "install-this-global-to-develop": {
     "esenv": "^1.1.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "twemoji": "^1.4.1"
+  }
 }

@@ -1,7 +1,6 @@
 'use strict';
 
 const ShellComponent = require('./shell-component');
-const electronApp = require('remote').require('browser-window');
 
 module.exports = function init(app) {
   app.config.on('all-preferences-loaded', () => {
@@ -10,6 +9,7 @@ module.exports = function init(app) {
   });
 
   app.on('packages-init-done', () => {
+    app.commands.execute('inject-js', `window.twemoji = require('${require.resolve('twemoji')}');`);
     app.commands.execute('inject-script', __dirname + '/hterm_all.js');
     setTimeout(()=>app.commands.execute('new-tab'), 100);
   });
