@@ -1,6 +1,7 @@
 'use strict';
 
 const ShellComponent = require('./shell-component');
+const themes = require('iterm-colors/bundle.json');
 
 module.exports = function init(app) {
   app.config.on('all-preferences-loaded', () => {
@@ -16,6 +17,29 @@ module.exports = function init(app) {
 
   const pkg = {
     initializeTerminal(t) {
+
+      console.log(themes)
+      if (this.preferences.theme) {
+        const themeName = this.preferences.theme;
+        const theme = themes[themeName];
+        if (theme.background) {
+          t.prefs_.set('background-color', theme.background);
+            
+        }
+        if (theme.foreground) {
+          t.prefs_.set('foreground-color', theme.foreground);
+        }
+        if (theme.cursor_text) {
+          t.prefs_.set('cursor-color', theme.cursor_text);
+        }
+        if (theme.palette) {
+          t.prefs_.set('color-palette-overrides', theme.palette);
+        }
+        
+      }
+
+      delete this.preferences.theme;
+
       Object.keys(this.preferences).forEach(k => {
         t.prefs_.set(k, this.preferences[k]);
       });
