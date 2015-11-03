@@ -13756,7 +13756,7 @@ hterm.TextAttributes.prototype.createContainer = function(opt_textContent) {
         size: 'svg',
         attributes: function attributesCallback(icon, variant) {
           return {
-            style: 'width: 100%;height: 100%;vertical-align:top;'
+            style: 'height: 100%;vertical-align:top;'
           };
         }
       });
