@@ -2,7 +2,7 @@
 
 const pty = require('pty.js');
 const EventEmitter = require('events').EventEmitter;
-
+const htermAll = require(__dirname + '/hterm_all.js');
 
 function createDomElements(elm) {
   const stdout = document.createElement('div');
@@ -16,8 +16,8 @@ function createDomElements(elm) {
 }
 
 function createTerminal(elms, pkg, app) {
-  const hterm = global.hterm;
-  const lib = global.lib;
+  const hterm = htermAll.hterm;
+  const lib = htermAll.lib;
   hterm.defaultStorage = new lib.Storage.Memory();
   const t = new hterm.Terminal();
   pkg.initializeTerminal(t);

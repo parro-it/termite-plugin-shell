@@ -10,9 +10,7 @@ module.exports = function init(app) {
   });
 
   app.on('packages-init-done', () => {
-    app.commands.execute('inject-js', `window.twemoji = require('${require.resolve('twemoji')}');`);
-    app.commands.execute('inject-script', __dirname + '/hterm_all.js');
-    setTimeout(()=>app.commands.execute('new-tab'), 100);
+    window.termite.commands.execute('new-tab');
   });
 
   const pkg = {

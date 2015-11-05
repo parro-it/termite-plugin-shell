@@ -43,6 +43,8 @@
 
 'use strict';
 
+const twemoji = require('twemoji');
+
 if (typeof lib != 'undefined')
   throw new Error('Global "lib" object already exists.');
 
@@ -16964,3 +16966,7 @@ lib.resource.add('hterm/git/HEAD', 'text/plain',
 );
 
 
+module.exports = {
+  lib: lib,
+  hterm: hterm
+};
