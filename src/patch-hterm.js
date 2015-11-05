@@ -5,34 +5,41 @@ const twemoji = require('twemoji');
 const lib = htermAll.lib;
 const hterm = htermAll.hterm;
 
-hterm.TextAttributes.prototype.createContainer = function(opt_textContent) {
-  var isEmoji = twemoji.parse(opt_textContent).indexOf('<img') !== -1;
-  if (!isEmoji && this.isDefault())
-    return this.document_.createTextNode(opt_textContent);
+hterm.TextAttributes.prototype.createContainer = function(optTextContent) {
+  const isEmoji = twemoji.parse(optTextContent).indexOf('<img') !== -1;
+  if (!isEmoji && this.isDefault()) {
+    return this.document_.createTextNode(optTextContent);
+  }
 
-  var span = this.document_.createElement('span');
-  var style = span.style;
+  const span = this.document_.createElement('span');
+  const style = span.style;
 
 
-  if (this.foreground != this.DEFAULT_COLOR)
+  if (this.foreground !== this.DEFAULT_COLOR) {
     style.color = this.foreground;
+  }
 
-  if (this.background != this.DEFAULT_COLOR)
+  if (this.background !== this.DEFAULT_COLOR) {
     style.backgroundColor = this.background;
+  }
 
-  if (this.enableBold && this.bold)
+  if (this.enableBold && this.bold) {
     style.fontWeight = 'bold';
+  }
 
-  if (this.faint)
+  if (this.faint) {
     span.faint = true;
+  }
 
-  if (this.italic)
+  if (this.italic) {
     style.fontStyle = 'italic';
+  }
 
-  if (this.blink)
+  if (this.blink) {
     style.fontStyle = 'italic';
+  }
 
-  var textDecoration = '';
+  let textDecoration = '';
   if (this.underline) {
     textDecoration += ' underline';
     span.underline = true;
@@ -50,19 +57,19 @@ hterm.TextAttributes.prototype.createContainer = function(opt_textContent) {
     span.wcNode = true;
   }
 
-  if (this.tileData != null) {
+  if (this.tileData !== null) {
     // This could be a wcNode too, so we add to the className here.
     span.className += ' tile tile_' + this.tileData;
     span.tileNode = true;
   }
 
 
-  if (opt_textContent) {
+  if (optTextContent) {
     if (isEmoji) {
-      span.innerHTML = twemoji.parse(opt_textContent, {
+      span.innerHTML = twemoji.parse(optTextContent, {
         ext: '.svg',
         size: 'svg',
-        attributes: function attributesCallback(icon, variant) {
+        attributes: function attributesCallback() {
           return {
             style: 'height: 100%;vertical-align:top;'
           };
@@ -70,40 +77,40 @@ hterm.TextAttributes.prototype.createContainer = function(opt_textContent) {
       });
       span.tileNode = true;
     } else {
-      span.textContent = opt_textContent;
+      span.textContent = optTextContent;
     }
-
   }
 
   return span;
 };
 
-hterm.Screen.prototype.insertString = function(str) {
-  var cursorNode = this.cursorNode_;
-  var cursorNodeText = cursorNode.textContent;
+hterm.Screen.prototype.insertString = function(_str) {
+  let str = _str;
+  const cursorNode = this.cursorNode_;
+  const cursorNodeText = cursorNode.textContent;
 
   this.cursorRowNode_.removeAttribute('line-overflow');
 
   // We may alter the width of the string by prepending some missing
   // whitespaces, so we need to record the string width ahead of time.
-  var strWidth = lib.wc.strWidth(str);
+  const strWidth = lib.wc.strWidth(str);
 
   // No matter what, before this function exits the cursor column will have
   // moved this much.
   this.cursorPosition.column += strWidth;
 
   // Local cache of the cursor offset.
-  var offset = this.cursorOffset_;
+  const offset = this.cursorOffset_;
 
   // Reverse offset is the offset measured from the end of the string.
   // Zero implies that the cursor is at the end of the cursor node.
-  var reverseOffset = hterm.TextAttributes.nodeWidth(cursorNode) - offset;
+  const reverseOffset = hterm.TextAttributes.nodeWidth(cursorNode) - offset;
 
   if (reverseOffset < 0) {
     // A negative reverse offset means the cursor is positioned past the end
     // of the characters on this line.  We'll need to insert the missing
     // whitespace.
-    var ws = lib.f.getWhitespace(-reverseOffset);
+    const ws = lib.f.getWhitespace(-reverseOffset);
 
     // This whitespace should be completely unstyled.  Underline, background
     // color, and strikethrough would be visible on whitespace, so we can't use
@@ -112,11 +119,11 @@ hterm.Screen.prototype.insertString = function(str) {
           this.textAttributes.strikethrough ||
           this.textAttributes.background ||
           this.textAttributes.wcNode ||
-          this.textAttributes.tileData != null)) {
+          this.textAttributes.tileData !== null)) {
       // Best case scenario, we can just pretend the spaces were part of the
       // original string.
       str = ws + str;
-    } else if (cursorNode.nodeType == 3 ||
+    } else if (cursorNode.nodeType === 3 ||
                !(cursorNode.wcNode ||
                  cursorNode.tileNode ||
                  cursorNode.style.textDecoration ||
@@ -125,7 +132,7 @@ hterm.Screen.prototype.insertString = function(str) {
       cursorNode.textContent = (cursorNodeText += ws);
     } else {
       // Worst case, we have to create a new node to hold the whitespace.
-      var wsNode = cursorNode.ownerDocument.createTextNode(ws);
+      const wsNode = cursorNode.ownerDocument.createTextNode(ws);
       this.cursorRowNode_.insertBefore(wsNode, cursorNode.nextSibling);
       this.cursorNode_ = cursorNode = wsNode;
       this.cursorOffset_ = offset = -reverseOffset;
@@ -135,13 +142,13 @@ hterm.Screen.prototype.insertString = function(str) {
     // We now know for sure that we're at the last character of the cursor node.
     reverseOffset = 0;
   }
-  var isEmoji = twemoji.parse(str).indexOf('<img') !== -1;
+  const isEmoji = twemoji.parse(str).indexOf('<img') !== -1;
 
   if (!isEmoji && this.textAttributes.matchesContainer(cursorNode)) {
     // The new text can be placed directly in the cursor node.
-    if (reverseOffset == 0) {
+    if (reverseOffset === 0) {
       cursorNode.textContent = cursorNodeText + str;
-    } else if (offset == 0) {
+    } else if (offset === 0) {
       cursorNode.textContent = str + cursorNodeText;
     } else {
       cursorNode.textContent =
@@ -157,9 +164,9 @@ hterm.Screen.prototype.insertString = function(str) {
   // beginning or end of the cursor node, then the adjacent node is also a
   // potential candidate.
 
-  if (offset == 0) {
+  if (offset === 0) {
     // At the beginning of the cursor node, the check the previous sibling.
-    var previousSibling = cursorNode.previousSibling;
+    const previousSibling = cursorNode.previousSibling;
     if (previousSibling &&
         this.textAttributes.matchesContainer(previousSibling)) {
       previousSibling.textContent += str;
@@ -168,16 +175,16 @@ hterm.Screen.prototype.insertString = function(str) {
       return;
     }
 
-    var newNode = this.textAttributes.createContainer(str);
+    const newNode = this.textAttributes.createContainer(str);
     this.cursorRowNode_.insertBefore(newNode, cursorNode);
     this.cursorNode_ = newNode;
     this.cursorOffset_ = strWidth;
     return;
   }
 
-  if (reverseOffset == 0) {
+  if (reverseOffset === 0) {
     // At the end of the cursor node, the check the next sibling.
-    var nextSibling = cursorNode.nextSibling;
+    const nextSibling = cursorNode.nextSibling;
     if (nextSibling &&
         this.textAttributes.matchesContainer(nextSibling)) {
       nextSibling.textContent = str + nextSibling.textContent;
@@ -186,7 +193,7 @@ hterm.Screen.prototype.insertString = function(str) {
       return;
     }
 
-    var newNode = this.textAttributes.createContainer(str);
+    const newNode = this.textAttributes.createContainer(str);
     this.cursorRowNode_.insertBefore(newNode, nextSibling);
     this.cursorNode_ = newNode;
     // We specifically need to include any missing whitespace here, since it's
@@ -198,8 +205,8 @@ hterm.Screen.prototype.insertString = function(str) {
   // Worst case, we're somewhere in the middle of the cursor node.  We'll
   // have to split it into two nodes and insert our new container in between.
   this.splitNode_(cursorNode, offset);
-  var newNode = this.textAttributes.createContainer(str);
-  this.cursorRowNode_.insertBefore(newNode, cursorNode.nextSibling);
-  this.cursorNode_ = newNode;
+  const newNode2 = this.textAttributes.createContainer(str);
+  this.cursorRowNode_.insertBefore(newNode2, cursorNode.nextSibling);
+  this.cursorNode_ = newNode2;
   this.cursorOffset_ = strWidth;
 };
