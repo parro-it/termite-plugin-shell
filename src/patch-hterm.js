@@ -1,4 +1,4 @@
-'use  strict';
+'use strict';
 
 const htermAll = require('hterm-umd');
 const twemoji = require('twemoji');
@@ -85,9 +85,10 @@ hterm.TextAttributes.prototype.createContainer = function(optTextContent) {
 };
 
 hterm.Screen.prototype.insertString = function(_str) {
+  'use  strict';
   let str = _str;
   const cursorNode = this.cursorNode_;
-  const cursorNodeText = cursorNode.textContent;
+  let cursorNodeText = cursorNode.textContent;
 
   this.cursorRowNode_.removeAttribute('line-overflow');
 
@@ -104,7 +105,7 @@ hterm.Screen.prototype.insertString = function(_str) {
 
   // Reverse offset is the offset measured from the end of the string.
   // Zero implies that the cursor is at the end of the cursor node.
-  const reverseOffset = hterm.TextAttributes.nodeWidth(cursorNode) - offset;
+  let reverseOffset = hterm.TextAttributes.nodeWidth(cursorNode) - offset;
 
   if (reverseOffset < 0) {
     // A negative reverse offset means the cursor is positioned past the end
