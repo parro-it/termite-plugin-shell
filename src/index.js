@@ -93,7 +93,6 @@ module.exports = function init(app) {
   app.commands.register('new-tab', () => {
     const component = new ShellComponent(app, pkg);
     const tab = app.tabs.add(component);
-    setTimeout(()=>pkg.currentHTerm.scrollPort_.onResize_(), 100);
     component.on('process-closed', () => {
       app.tabs.activateFirstTab();
       tab.close();
