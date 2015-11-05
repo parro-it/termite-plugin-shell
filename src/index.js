@@ -90,13 +90,6 @@ module.exports = function init(app) {
     path: __dirname
   };
 
-  app.on('window-ready', () => {
-    app.window.on('maximize', () => {
-      pkg.currentHTerm.scrollPort_.onResize_();
-    });
-    setTimeout(()=>pkg.currentHTerm.scrollPort_.onResize_(), 500);
-  });
-
   app.commands.register('new-tab', () => {
     const component = new ShellComponent(app, pkg);
     const tab = app.tabs.add(component);
