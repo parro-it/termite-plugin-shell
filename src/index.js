@@ -168,6 +168,7 @@ module.exports = function init(app) {
     }
   });
 
+  require('./patch-hterm');
 
   return pkg;
 };

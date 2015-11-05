@@ -2,7 +2,8 @@
 
 const pty = require('pty.js');
 const EventEmitter = require('events').EventEmitter;
-const htermAll = require(__dirname + '/hterm_all.js');
+// const htermAll = require(__dirname + '/hterm_all.js');
+const htermAll = require('hterm-umd');
 
 function createDomElements(elm) {
   const stdout = document.createElement('div');
