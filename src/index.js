@@ -168,6 +168,27 @@ module.exports = function init(app) {
     }
   });
 
+  app.commands.register('delete-line', () => {
+    const component = pkg.currentComponent;
+    const col = pkg.cursorCol;
+    const text = pkg.cursorRowText;
+
+    if (!text) {
+      return;
+    }
+
+    let i = text.length - col + 1;
+    while (i--) {
+      component.sendKey(0x27, 'keydown');
+    }
+
+    i = text.length;
+
+    while (i--) {
+      component.sendKey(0x08, 'keydown');
+    }
+  });
+
   require('./patch-hterm');
 
   return pkg;

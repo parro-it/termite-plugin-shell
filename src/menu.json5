@@ -20,5 +20,9 @@
     label: 'End of line',
     accelerator: 'CmdOrCtrl+End',
     command: 'end-line'
+  },{
+    label: 'Delete line',
+    accelerator: 'Shift+Esc',
+    command: 'delete-line'
   }]
 }
